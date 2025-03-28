@@ -9,7 +9,10 @@ Date: 27/03/2025\
 Version: 1.0 for spanish translation based on UP 11.5 (rc14.1)\
 Contact: formerly ClanDLAN.net member, now in Discord.
 
- This module changes some visual aspects when using 16:9 Widescreen resolution. For better usage, I recommend using the textures included.
+ This module changes some visual aspects when using 16:9 Widescreen resolution. For better usage, I recommend using the textures included.\
+ This module is set for 16:9 resolutions, if you use it for 16:10 or 4:3 resolutions maybe appear graphical glitches.
+
+ The changes added to this module are:
 * a.  Skip Intro checkbox in Character Creation is positioned correctly for 16:9 Widescreen resolution
 * b.	'Hotkeys' word in Hotkeys Window is centered for 16:9 Widescreen resolution
 * c.  Numbers in Hotkeys Window are REMOVED (only present left numbers) and added in texture for WideScreen 16:9\
