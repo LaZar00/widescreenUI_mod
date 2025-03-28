@@ -10,7 +10,7 @@
 // This mod changes some visual aspects when using 16:9 Widescreen resolution
 // Some of this changes are:
 //  a.  Skip Intro checkbox in Character Creation is positioned correctly for 16:9 Widescreen resolution
-//	b.	'Hotkeys' word in Hotkeys Window is centered for 16:9 Widescreen resolution
+//  b.	'Hotkeys' word in Hotkeys Window is centered for 16:9 Widescreen resolution
 //  c.  Numbers in Hotkeys Window are REMOVED (only present left numbers) and added in texture for WideScreen 16:9
 //  d.  Horizontal Dividers in Hotkeys Window are REMOVED
 
