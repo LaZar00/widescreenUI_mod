@@ -6,11 +6,12 @@ I decided to code this external module to avoid changing the original libraries 
  
 Author: L@Zar0\
 Date: 27/03/2025\
-Version: 1.0 for spanish translation based on UP 11.5 (rc14.1)\
+Updated: 28/03/2025\
+Version: 1.0, based on Unofficial Patch 11.5\
 Contact: formerly ClanDLAN.net member, now in Discord.
 
- This module changes some visual aspects when using 16:9 Widescreen resolution. For better usage, I recommend using the textures included.\
- This module is set for 16:9 resolutions, if you use it for 16:10 or 4:3 resolutions maybe appear graphical glitches.
+ This module changes some visual aspects when using Widescreen resolutions. For better usage, I recommend using the textures included.\
+ The textures of this module are done for 16:9 resolutions, if you use it for 16:10, 3:2, 25:16, 21:9 or 4:3 resolutions, there could appear graphical glitches.
 
  The changes added to this module are:
 * a.  Skip Intro checkbox in Character Creation is positioned correctly for 16:9 Widescreen resolution
