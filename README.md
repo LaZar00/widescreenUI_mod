@@ -11,7 +11,7 @@ Version: 1.0, based on Unofficial Patch 11.5\
 Contact: formerly ClanDLAN.net member, now in Discord.
 
 This module patches some visual aspects when using Widescreen resolutions. For better usage, I recommend using the textures included.\
-The textures of this module are done specifically for 16:9 resolutions, if you use it for 16:10, 3:2, 25:16, 21:9, there could appear incorrect graphical proportions.\
+The textures of this module are done specifically for 16:9 resolutions (and can be a bit compatible with 16:10), if you use it for 16:10, 3:2, 25:16, 21:9, there could appear incorrect graphical proportions.\
 The default textures of the game are prepared for 4:3 resolutions.
 
  The changes added to this module are:
