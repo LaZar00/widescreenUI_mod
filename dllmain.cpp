@@ -95,7 +95,7 @@ void SafeWrite32(UInt32 addr, UInt32 data)
 	VirtualProtect((void*)addr, 4, oldProtect, &oldProtect);
 }
 
-// We will get the AR we are using. We assume 4:3 is the default of the game and thus unused.
+// We will get the AR we are using. We assume 4:3 is the default of the game.
 // Common resolutions:
 // 0 = 4:3
 // 1 = 16:9		(1.77)
@@ -176,10 +176,10 @@ extern "C" __declspec(dllexport) void loaded_client()
 		iARFactor = GetARFactor(screen_width, screen_height);
 
 		//  a.  Skip Intro checkbox in Character Creation is positioned correctly for Widescreen resolutions
-		//		Resolution		xpos 					ypos 
+		//      Resolution		xpos 					ypos 
 		//  0   800x600			0x320					0x20F	527	(0,68)
-		//	1	1366x768		0x0460	1120 (0,82)		0x20F	527	(0,68)
-		//		1920x1080		0x0640	1600 (0,83)		0x2E4	740	(0,68)
+		//  1   1366x768		0x0460	1120 (0,82)		0x20F	527	(0,68)
+		//      1920x1080		0x0640	1600 (0,83)		0x2E4	740	(0,68)
 		//  2	1680x1050		0x0640	1560 (0,81)		0x2E4	740	(0,68)
 		//  3	1280x1024					 (0,81)					(0,68)
 		//  4	720x480						 
