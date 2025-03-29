@@ -2,7 +2,7 @@
 
 This module is for the game Vampire: The Masquerade - Bloodlines.
 
-I decided to code this external module to avoid changing the original libraries that the Unofficial Patch or even the original game includes in the game.
+I decided to code this external module to avoid changing the original libraries that the Unofficial Patch includes.
  
 Author: L@Zar0\
 Date: 27/03/2025\
