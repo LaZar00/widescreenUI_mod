@@ -13,6 +13,7 @@
 //  b.	'Hotkeys' word in Hotkeys Window is centered for 16:9 Widescreen resolution
 //  c.  Numbers in Hotkeys Window are REMOVED (only present left numbers) and added in texture for WideScreen 16:9
 //  d.  Horizontal Dividers in Hotkeys Window are REMOVED
+//  e.  Dialog Box width fixed to be wider and show the lines INSIDE the box.
 
 // I will adjust some of the features depending on the aspect ratio (excep 4:3, that is the default values)
 //Common resolutions in ratios :
@@ -67,6 +68,8 @@
 typedef unsigned char			UInt8;
 typedef short unsigned int		UInt16;
 typedef unsigned int			UInt32;
+typedef unsigned long			UInt64;
+typedef double					QDWORD;
 
 
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -93,6 +96,17 @@ void SafeWrite32(UInt32 addr, UInt32 data)
 	VirtualProtect((void*)addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
 	*((UInt32*)addr) = data;
 	VirtualProtect((void*)addr, 4, oldProtect, &oldProtect);
+}
+
+void SafeWriteDouble(UInt64 addr, double data) {
+
+	DWORD oldProtect;
+
+	VirtualProtect((void*)addr, 8, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+	*((QDWORD*)addr) = (QDWORD)(data);
+
+	VirtualProtect((void*)addr, 8, oldProtect, &oldProtect);
 }
 
 // We will get the AR we are using. We assume 4:3 is the default of the game.
@@ -257,6 +271,17 @@ extern "C" __declspec(dllexport) void loaded_client()
 		//  d.  Horizontal Dividers in Hotkeys Window are REMOVED
 		addr = (UInt32)client + 0x18335B;
 		SafeWriteBuf(addr, disableHorizDivisors, 5);
+
+		//  e.  Dialog Box width fixed to be wider and show the lines INSIDE the box.
+		QDWORD value;
+
+		if (GetPrivateProfileIntA("DialogBoxWidthFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+		{
+			addr = (UInt64)client + 0x228FA8;
+			value = GetPrivateProfileIntA("DialogBoxWidthFix", "width", 832, ".\\Bin\\loader\\widescreenUI_mod.ini");
+
+			SafeWriteDouble(addr, value);
+		}
 
 
 		// For tracing if we access .ini file
