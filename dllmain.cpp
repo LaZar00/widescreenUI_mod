@@ -14,6 +14,7 @@
 //  c.  Numbers in Hotkeys Window are REMOVED (only present left numbers) and added in texture for WideScreen 16:9
 //  d.  Horizontal Dividers in Hotkeys Window are REMOVED
 //  e.  Dialog Box width fixed to be wider and show the lines INSIDE the box.
+//  f.  Fix for "Dividers" \material\interface\charactermaintenance\cm_divider" to align with windows
 
 // I will adjust some of the features depending on the aspect ratio (excep 4:3, that is the default values)
 //Common resolutions in ratios :
@@ -109,6 +110,25 @@ void SafeWriteDouble(UInt64 addr, double data) {
 	VirtualProtect((void*)addr, 8, oldProtect, &oldProtect);
 }
 
+void SafeWriteDoubleWithOffsetChange(UInt64 addr_data, double data, UInt32 offset)
+{
+	SafeWriteDouble(addr_data, data);
+	SafeWrite32(offset, addr_data);
+}
+
+void PatchMemoryNop(UInt32 Address, UInt32 Size)
+{
+	DWORD oldProtect = 0;
+	VirtualProtect((LPVOID)Address, Size, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+	for (UInt32 i = 0; i < Size; i++)
+		*(volatile BYTE*)(Address + i) = 0x90;
+
+	VirtualProtect((LPVOID)Address, Size, oldProtect, &oldProtect);
+
+	FlushInstructionCache(GetCurrentProcess(), (LPVOID)Address, Size);
+}
+
 // We will get the AR we are using. We assume 4:3 is the default of the game.
 // Common resolutions:
 // 0 = 4:3
@@ -163,7 +183,7 @@ extern "C" __declspec(dllexport) void loaded_client()
 	UInt32 addr;
 
 	unsigned char disableNums[1] = { 0x0 };
-	unsigned char disableHorizDivisors[5] = { 0x90, 0x90, 0x90, 0x90, 0x90 };
+	//unsigned char disableHorizDivisors[5] = { 0x90, 0x90, 0x90, 0x90, 0x90 };
 
 		
 	HMODULE client = GetModuleHandleA("client.dll");
@@ -269,8 +289,9 @@ extern "C" __declspec(dllexport) void loaded_client()
 		
 
 		//  d.  Horizontal Dividers in Hotkeys Window are REMOVED
-		addr = (UInt32)client + 0x18335B;
-		SafeWriteBuf(addr, disableHorizDivisors, 5);
+		PatchMemoryNop((UInt32)client + 0x18335B, 5);
+		//addr = (UInt32)client + 0x18335B;
+		//SafeWriteBuf(addr, disableHorizDivisors, 5);
 
 		//  e.  Dialog Box width fixed to be wider and show the lines INSIDE the box.
 		QDWORD value;
@@ -283,6 +304,29 @@ extern "C" __declspec(dllexport) void loaded_client()
 			SafeWriteDouble(addr, value);
 		}
 
+		//  f.  Fix for "Dividers" \material\interface\charactermaintenance\cm_divider" to adjust to the windows
+		//  These are for CharacterEditor "Dividers"
+		if (GetPrivateProfileIntA("DividerFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+		{
+			// Experience Divider (centered in the word Experience in Character Editor menu)
+			SafeWriteDoubleWithOffsetChange((UInt64)client + 0x1E2FF0, 0.0009475, (UInt32)client + 0x18C6C2);	// Load
+
+			// Main Dividers (Skills, Abilities...) (centered the best possible)
+			addr = (UInt32)client + 0x17FAC4;
+			unsigned char maindividers[1] = { 0xE4 };
+			SafeWriteBuf(addr, maindividers, 1);
+
+			// Information Divider (centered the best possible)
+			unsigned char info_and_activequests[1] = { 0x3A };
+			addr = (UInt32)client + 0x17BB68;
+			SafeWriteBuf(addr, info_and_activequests, 1);
+
+			// Active Quests Divider (centered for the infowindow)
+			addr = (UInt32)client + 0x188901;
+			SafeWriteBuf(addr, info_and_activequests, 1);
+		}
+
+
 
 		// For tracing if we access .ini file
 		//char sample[10];
@@ -290,5 +334,23 @@ extern "C" __declspec(dllexport) void loaded_client()
 		//sprintf(sample, "%d", GetPrivateProfileIntA("SkipIntro", "ypos", 0x20E, ".\\Bin\\loader\\widescreenUI_mod.ini"));
 		//fputs(sample, fout);
 		//fclose(fout);
+	}
+
+
+	//  f.  Fix for "Dividers" \material\interface\charactermaintenance\cm_divider" to adjust to the windows
+	//  These are for Load/Save/Delete Save/Confirm/EntryText/Notify windows
+	HMODULE GameUI = GetModuleHandleA("GameUI.dll");
+	if (GameUI != NULL)
+	{
+		if (GetPrivateProfileIntA("DividerFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+		{
+			// Load & Save Game Divider (centered in the screen)
+			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E760, 144.0, (UInt32)GameUI + 0x13D10);	// Load
+			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E760, 144.0, (UInt32)GameUI + 0x17650); // Save
+
+			// EntryText_UserName Divider (made thinner)
+			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E768, 490.0, (UInt32)GameUI + 0xD390);	// Load
+
+		}
 	}
 }
