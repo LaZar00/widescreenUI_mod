@@ -15,6 +15,7 @@
 //  d.  Horizontal Dividers in Hotkeys Window are REMOVED
 //  e.  Dialog Box width fixed to be wider and show the lines INSIDE the box.
 //  f.  Fix for "Dividers" \material\interface\charactermaintenance\cm_divider" to align with windows
+//  g.  Fix for "Titles" of the windows (Options/Load/Save...) for some small resolutions
 
 // I will adjust some of the features depending on the aspect ratio (excep 4:3, that is the default values)
 //Common resolutions in ratios :
@@ -306,7 +307,7 @@ extern "C" __declspec(dllexport) void loaded_client()
 
 		//  f.  Fix for "Dividers" \material\interface\charactermaintenance\cm_divider" to adjust to the windows
 		//  These are for CharacterEditor "Dividers"
-		if (GetPrivateProfileIntA("DividerFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+		if (GetPrivateProfileIntA("DividersFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
 		{
 			// Experience Divider (centered in the word Experience in Character Editor menu)
 			SafeWriteDoubleWithOffsetChange((UInt64)client + 0x1E2FF0, 0.0009475, (UInt32)client + 0x18C6C2);	// Load
@@ -337,19 +338,41 @@ extern "C" __declspec(dllexport) void loaded_client()
 	}
 
 
-	//  f.  Fix for "Dividers" \material\interface\charactermaintenance\cm_divider" to adjust to the windows
 	//  These are for Load/Save/Delete Save/Confirm/EntryText/Notify windows
 	HMODULE GameUI = GetModuleHandleA("GameUI.dll");
 	if (GameUI != NULL)
 	{
-		if (GetPrivateProfileIntA("DividerFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+		//  f.  Fix for "Dividers" \material\interface\charactermaintenance\cm_divider" to adjust to the windows
+		if (GetPrivateProfileIntA("DividersFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
 		{
 			// Load & Save Game Divider (centered in the screen)
-			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E760, 144.0, (UInt32)GameUI + 0x13D10);	// Load
 			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E760, 144.0, (UInt32)GameUI + 0x17650); // Save
+			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E760, 144.0, (UInt32)GameUI + 0x13D10);	// Load
 
 			// EntryText_UserName Divider (made thinner)
 			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E768, 490.0, (UInt32)GameUI + 0xD390);	// Load
+
+		}
+
+		//  g.  Fix for "Titles" of the windows (Options/Load/Save...) for some small resolutions
+		if (GetPrivateProfileIntA("TitlesFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+		{
+			// Options Title (Tabs and Panel with lowered Ypos)
+			SafeWriteDouble((UInt64)GameUI + 0x4F598, 40.0);
+
+			// Load & Save Game Titles (centered in the screen)
+			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E750, 0.0015461444854736328, (UInt32)GameUI + 0x1762B); // Save
+			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E750, 0.0015461444854736328, (UInt32)GameUI + 0x13CEB);	// Load
+
+			// EntryText_UserName Title
+			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E750, 0.0015461444854736328, (UInt32)GameUI + 0xD3A9);
+
+			// Notification Title
+			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E750, 0.0015461444854736328, (UInt32)GameUI + 0x9E7E);
+
+			// Confirmation Title
+			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E750, 0.0015461444854736328, (UInt32)GameUI + 0x2055);
+
 
 		}
 	}
