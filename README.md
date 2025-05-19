@@ -6,8 +6,8 @@ I decided to code this external module to avoid changing the original libraries 
  
 Author: L@Zar0\
 Date: 27/03/2025\
-Updated: 24/04/2025\
-Version: 1.3, based on Unofficial Patch 11.5\
+Updated: 25/04/2025\
+Version: 1.4, based on Unofficial Patch 11.5\
 Contact: formerly ClanDLAN.net member, now in Discord.
 
 This module patches some visual aspects when using Widescreen resolutions. For better usage, I recommend using the textures included.\
@@ -22,6 +22,7 @@ The default textures of the game are prepared for 4:3 resolutions.
 * d.  Horizontal Dividers in Hotkeys Window are REMOVED (all Widescreen resolutions)
 * e.  Dialog Box width fixed to be wider and show the lines INSIDE the box.
 * f.  Fix for "Dividers" \material\interface\charactermaintenance\cm_divider" to align with windows
+* g.  Fix for "Titles" of the windows (Options/Load/Save...) for some small resolutions
 
 # Install
 
