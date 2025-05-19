@@ -16,6 +16,8 @@
 //  e.  Dialog Box width fixed to be wider and show the lines INSIDE the box.
 //  f.  Fix for "Dividers" \material\interface\charactermaintenance\cm_divider" to align with windows
 //  g.  Fix for "Titles" of the windows (Options/Load/Save...) for some small resolutions
+//  h.  Set size of row manually for loading/saving tables
+//  i.  Fix for inventory buttons shadow outside boundaries
 
 // I will adjust some of the features depending on the aspect ratio (excep 4:3, that is the default values)
 //Common resolutions in ratios :
@@ -327,6 +329,36 @@ extern "C" __declspec(dllexport) void loaded_client()
 			SafeWriteBuf(addr, info_and_activequests, 1);
 		}
 
+		//  i.  Fix for inventory buttons shadow outside boundaries
+		if (GetPrivateProfileIntA("InventoryButtonsShadowFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+		{
+			// For this fix you will need the modified buttons.tth and buttons.ttz files in
+			// "\materials\interface\charactermaintenance" folder.
+			// y position coordinate and height of the shadow for Action & Drop buttons
+			// (most left and middle buttons respectively)
+			double y_position = 686.0;
+			addr = (UInt32)client + 0x24A908;
+			SafeWriteDouble((UInt64)addr, y_position);
+
+			double y_height = 54.0;
+			addr = (UInt32)client + 0x24A918;
+			SafeWriteDouble((UInt64)addr, y_height);
+
+
+			// x width of the shadow for Drop button (middle button)
+			//double x_position = 450.0;
+			//addr = (UInt32)client + 0x24A8F0;
+			//SafeWriteDouble((UInt64)addr, x_position);
+
+			double x_width = 132.0;
+			addr = (UInt32)client + 0x24A8F8;
+			SafeWriteDouble((UInt64)addr, x_width);
+
+			// x width of the shadow for Action button (most left button)
+			// We will reuse the previous value.
+			addr = (UInt32)client + 0x16B9BD;
+			SafeWrite32(addr, (UInt32)client + 0x24A8F8);
+		}
 
 
 		// For tracing if we access .ini file
@@ -354,7 +386,7 @@ extern "C" __declspec(dllexport) void loaded_client()
 
 		}
 
-		//  g.  Fix for "Titles" of the windows (Options/Load/Save...) for some small resolutions
+		//  g. Fix for "Titles" of the windows (Options/Load/Save...) for some small resolutions
 		if (GetPrivateProfileIntA("TitlesFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
 		{
 			// Options Title (Tabs and Panel with lowered Ypos)
@@ -372,8 +404,20 @@ extern "C" __declspec(dllexport) void loaded_client()
 
 			// Confirmation Title
 			SafeWriteDoubleWithOffsetChange((UInt64)GameUI + 0x4E750, 0.0015461444854736328, (UInt32)GameUI + 0x2055);
-
-
 		}
+
+		// h. Set size of row manually for loading/saving tables
+		if (GetPrivateProfileIntA("SizeofRowTables", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+		{
+			int size;
+			int screenheight;
+
+			if (size = GetPrivateProfileIntA("SizeofRowTables", "sizeHeight", 14, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+			{
+				addr = ((UInt32)GameUI + 0x2BE38);
+				SafeWrite32(addr, size);
+			}
+		}
+
 	}
 }
