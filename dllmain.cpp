@@ -10,6 +10,7 @@
 // This mod changes some visual aspects when using 16:9 Widescreen resolution
 // Some of this changes are:
 //  a.  Skip Intro checkbox in Character Creation is positioned correctly for 16:9 Widescreen resolution
+//  a1. Added checkbox DeltaXPos and CheckboxWidth values for wider texts
 //  b.	'Hotkeys' word in Hotkeys Window is centered for 16:9 Widescreen resolution
 //  c.  Numbers in Hotkeys Window are REMOVED (only present left numbers) and added in texture for WideScreen 16:9
 //  d.  Horizontal Dividers in Hotkeys Window are REMOVED
@@ -18,6 +19,7 @@
 //  g.  Fix for "Titles" of the windows (Options/Load/Save...) for some small resolutions
 //  h.  Set size of row manually for loading/saving tables
 //  i.  Fix for inventory buttons shadow outside boundaries
+//	j.	Fix loading bar aspect ratio for some 16:9 and 16:10 widescreens
 
 // I will adjust some of the features depending on the aspect ratio (excep 4:3, that is the default values)
 //Common resolutions in ratios :
@@ -102,6 +104,17 @@ void SafeWrite32(UInt32 addr, UInt32 data)
 	VirtualProtect((void*)addr, 4, oldProtect, &oldProtect);
 }
 
+void SafeWriteFloat(UInt32 addr, float data) {
+
+	DWORD oldProtect;
+
+	VirtualProtect((void*)addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+	*((FLOAT*)addr) = (FLOAT)(data);
+
+	VirtualProtect((void*)addr, 4, oldProtect, &oldProtect);
+}
+
 void SafeWriteDouble(UInt64 addr, double data) {
 
 	DWORD oldProtect;
@@ -182,6 +195,7 @@ extern "C" __declspec(dllexport) void loaded_client()
 	DWORD dataSizeH = sizeof(screen_height);
 	float xFactor = 0, yFactor = 0;
 	int iHotkeysWordXPos = 0, iARFactor = 0;
+	double dEmptyBarXPos, dEmptyBarWidth, dRedBarXPos, dRedBarWidth;
 
 	UInt32 addr;
 
@@ -221,62 +235,152 @@ extern "C" __declspec(dllexport) void loaded_client()
 		//  3	1280x1024					 (0,81)					(0,68)
 		//  4	720x480						 
 		// If we have some Aspect Ratio, we push the values.
+
+		// This info is for the Loading Bar.
+		//// 1024 texture (original)
+		////					EmptyBarXPos		EmptyBarWidth		RedBarXPos		RedBarWidth
+		//// 1024				152.0				869.0				190.0			830.0
+		//// 1280x720			208.0				832.0				234.0			798.0
+		//// 1280x800			200.0				832.0				234.0			798.0
+		//// 1366				216.0 (0,155)		808.0				247.0			776.0		
+		//// 1600x1024			248.0				790.0				277.0			761.0
+		//// 1680				248.0				776.0				277.0			748.0
+		//// 1920				288.0				740.0				312.0			717.0
 		if (iARFactor > -1)
 		{
+			yFactor = (float)0.69;
+			dEmptyBarXPos = -1.0;
+			dEmptyBarWidth = -1.0;
+			dRedBarXPos = -1.0;
+			dRedBarWidth = -1.0;
+
 			switch (iARFactor)
 			{
 			case 0:
-				yFactor = (float)0.68;
 				xFactor = (float)0.80;
 				iHotkeysWordXPos = 0x19F;
 				break;
 
 			case 1:
-				yFactor = (float)0.68;
 				xFactor = (float)0.82;
 				iHotkeysWordXPos = 0xC0;
+
+				if (screen_width == 1920)
+				{
+					dEmptyBarXPos = 280.0;
+					dEmptyBarWidth = 740.0;
+					dRedBarXPos = 305.0;
+					dRedBarWidth = 715;
+				}
+				else if (screen_width == 1600)
+				{
+					dEmptyBarXPos = 248.0;
+					dEmptyBarWidth = 776.0;
+					dRedBarXPos = 277.0;
+					dRedBarWidth = 748.0;
+				}
+				else if (screen_width == 1366)
+				{
+					dEmptyBarXPos = 216.0;
+					dEmptyBarWidth = 808.0;
+					dRedBarXPos = 247.0;
+					dRedBarWidth = 776.0;
+				}
+				else if (screen_width == 1280)
+				{
+					dEmptyBarXPos = 208.0;
+					dEmptyBarWidth = 832.0;
+					dRedBarXPos = 242.0;
+					dRedBarWidth = 798.0;
+				}
+
 				break;
 
 			case 2:
-				yFactor = (float)0.68;
 				xFactor = (float)0.81;
 				iHotkeysWordXPos = 0x108;
+
+				if (screen_width == 1680) 
+				{					
+					dEmptyBarXPos = 248.0;
+					dEmptyBarWidth = 776.0;
+					dRedBarXPos = 277.0;
+					dRedBarWidth = 748.0;
+				}
+				else if(screen_width == 1280)
+				{
+					dEmptyBarXPos = 200.0;
+					dEmptyBarWidth = 832.0;
+					dRedBarXPos = 234.0;
+					dRedBarWidth = 798;
+				}
+
 				break;
 
 			case 3:
-				yFactor = (float)0.68;
 				xFactor = (float)0.81;
 				iHotkeysWordXPos = 0x1D4;
 				break;
 
 			case 4:
-				yFactor = (float)0.68;
 				xFactor = (float)0.81;
 				iHotkeysWordXPos = 0x138;
 				break;
 
 			case 5:
-				yFactor = (float)0.68;
 				xFactor = (float)0.81;
 				iHotkeysWordXPos = 0x11F;
+
+				if (screen_width == 1600) 
+				{
+					dEmptyBarXPos = 248.0;
+					dEmptyBarWidth = 776.0;
+					dRedBarXPos = 277.0;
+					dRedBarWidth = 748.0;
+				}
+
 				break;
 
 			default:
 				break;
 			}
 
-			addr = (UInt32)client + 0x17F3ED;
-			SafeWrite32(addr, (UInt32)(screen_height * yFactor));
-			//SafeWrite32(addr, GetPrivateProfileIntA("SkipIntro", "ypos", 0x20E, ".\\Bin\\loader\\widescreenUI_mod.ini"));
+			if (GetPrivateProfileIntA("SkipIntroFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+			{
+				WORD value;
 
-			addr = (UInt32)client + 0x17F3F2;
-			SafeWrite32(addr, (UInt32)(screen_width * xFactor));
-			//SafeWrite32(addr, GetPrivateProfileIntA("SkipIntro", "xpos", 0x320, ".\\Bin\\loader\\widescreenUI_mod.ini"));
+				addr = (UInt32)client + 0x17F3ED;
+				SafeWrite32(addr, (UInt32)(screen_height * yFactor));
 
+				//  a1. Added checkbox DeltaXPos and CheckboxWidth values for wider texts
+				addr = (UInt32)client + 0x17F3F2;
+				value = GetPrivateProfileIntA("SkipIntroFix", "DeltaXPos", 0, ".\\Bin\\loader\\widescreenUI_mod.ini");
+				SafeWrite32(addr, (UInt32)((screen_width * xFactor)) + value);
+
+				addr = (UInt32)client + 0x17F3E8;
+				value = GetPrivateProfileIntA("SkipIntroFix", "CheckboxWidth", 0xD0, ".\\Bin\\loader\\widescreenUI_mod.ini");
+				SafeWrite32(addr, (UInt32)(value));
+			}
 
 			//	b.	'Hotkeys' word in Hotkeys Window is centered for Widescreen resolutions
-			addr = (UInt32)client + 0x182778;
-			SafeWrite32(addr, iHotkeysWordXPos);
+			if (GetPrivateProfileIntA("HotkeysWordCentered", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+			{
+				addr = (UInt32)client + 0x182778;
+				SafeWrite32(addr, iHotkeysWordXPos);
+			}
+			
+			//	j.	Fix loading bar aspect ratio for some 16:9 and 16:10 widescreens
+			if (GetPrivateProfileIntA("LoadingBarFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
+			{
+				if (dEmptyBarWidth != -1) 
+				{
+					SafeWriteDouble((UInt64)client + 0x249870, dEmptyBarWidth); // image loading bar horizontal scaling
+					SafeWriteDouble((UInt64)client + 0x249880, dEmptyBarXPos); // image loading bar x position
+
+					SafeWriteDouble((UInt64)client + 0x249890, dRedBarWidth); // image loading red bar horizontal scaling
+					SafeWriteDouble((UInt64)client + 0x2498A0, dRedBarXPos); // image loading red bar x position
+				}
+			}
 		}
 
 
@@ -418,6 +522,5 @@ extern "C" __declspec(dllexport) void loaded_client()
 				SafeWrite32(addr, size);
 			}
 		}
-
 	}
 }
