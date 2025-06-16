@@ -40,3 +40,4 @@ Unofficial Patch 11.5 by Wesp5 required.
 # Acknowledgements
 + Niko from Planet Vampire Discord in appointing me to documentation for coding this.
 + Wesp5 from the Unofficial Patch for helping me test the mod and his knowledge.
++ Psycho-A from the Unofficial Patch for helping me test the mod and his observations.
