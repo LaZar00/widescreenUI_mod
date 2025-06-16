@@ -6,8 +6,8 @@ I decided to code this external module to avoid changing the original libraries 
  
 Author: L@Zar0\
 Date: 27/03/2025\
-Updated: 19/05/2025\
-Version: 1.4i, based on Unofficial Patch 11.5\
+Updated: 16/06/2025\
+Version: 1.4k, based on Unofficial Patch 11.5\
 Contact: formerly ClanDLAN.net member, now in Discord.
 
 This module patches some visual aspects when using Widescreen resolutions. For better usage, I recommend using the textures included.\
@@ -16,6 +16,7 @@ The default textures of the game are prepared for 4:3 resolutions.
 
  The changes added to this module are:
 * a.  Skip Intro checkbox in Character Creation is positioned correctly for Widescreen resolutions.
+  a1. Added checkbox DeltaXPos and CheckboxWidth values for wider texts
 * b.	'Hotkeys' word in Hotkeys Window is centered for Widescreens resolutions.
 * c.  Numbers in Hotkeys Window are REMOVED (only present left numbers) and added in texture (only WideScreen 16:9 resolutions).\
       I include a texture with drawn numbers.
@@ -25,6 +26,7 @@ The default textures of the game are prepared for 4:3 resolutions.
 * g.  Fix for "Titles" of the windows (Options/Load/Save...) for some small resolutions
 * h.  Set size of row manually for loading/saving tables
 * i.  Fix for inventory buttons shadow outside boundaries
+* j.	 Fix loading bar aspect ratio for some 16:9 and 16:10 widescreens
 
 # Install
 
