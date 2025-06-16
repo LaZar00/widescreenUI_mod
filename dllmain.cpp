@@ -264,57 +264,11 @@ extern "C" __declspec(dllexport) void loaded_client()
 			case 1:
 				xFactor = (float)0.82;
 				iHotkeysWordXPos = 0xC0;
-
-				if (screen_width == 1920)
-				{
-					dEmptyBarXPos = 280.0;
-					dEmptyBarWidth = 740.0;
-					dRedBarXPos = 305.0;
-					dRedBarWidth = 715;
-				}
-				else if (screen_width == 1600)
-				{
-					dEmptyBarXPos = 248.0;
-					dEmptyBarWidth = 776.0;
-					dRedBarXPos = 277.0;
-					dRedBarWidth = 748.0;
-				}
-				else if (screen_width == 1366)
-				{
-					dEmptyBarXPos = 216.0;
-					dEmptyBarWidth = 808.0;
-					dRedBarXPos = 247.0;
-					dRedBarWidth = 776.0;
-				}
-				else if (screen_width == 1280)
-				{
-					dEmptyBarXPos = 208.0;
-					dEmptyBarWidth = 832.0;
-					dRedBarXPos = 242.0;
-					dRedBarWidth = 798.0;
-				}
-
 				break;
 
 			case 2:
 				xFactor = (float)0.81;
 				iHotkeysWordXPos = 0x108;
-
-				if (screen_width == 1680) 
-				{					
-					dEmptyBarXPos = 248.0;
-					dEmptyBarWidth = 776.0;
-					dRedBarXPos = 277.0;
-					dRedBarWidth = 748.0;
-				}
-				else if(screen_width == 1280)
-				{
-					dEmptyBarXPos = 200.0;
-					dEmptyBarWidth = 832.0;
-					dRedBarXPos = 234.0;
-					dRedBarWidth = 798;
-				}
-
 				break;
 
 			case 3:
@@ -330,21 +284,58 @@ extern "C" __declspec(dllexport) void loaded_client()
 			case 5:
 				xFactor = (float)0.81;
 				iHotkeysWordXPos = 0x11F;
-
-				if (screen_width == 1600) 
-				{
-					dEmptyBarXPos = 248.0;
-					dEmptyBarWidth = 776.0;
-					dRedBarXPos = 277.0;
-					dRedBarWidth = 748.0;
-				}
-
 				break;
 
 			default:
 				break;
 			}
 
+			// j. Loading Bar coef assignment
+			switch (screen_width)
+			{
+			case 1024:
+				break;
+
+			case 1280:
+				dEmptyBarXPos = 208.0;
+				dEmptyBarWidth = 832.0;
+				dRedBarXPos = 242.0;
+				dRedBarWidth = 798.0;
+				break;
+
+			case 1360:
+			case 1366:
+				dEmptyBarXPos = 216.0;
+				dEmptyBarWidth = 808.0;
+				dRedBarXPos = 247.0;
+				dRedBarWidth = 776.0;
+				break;
+
+			case 1440:
+				dEmptyBarXPos = 235.0;
+				dEmptyBarWidth = 787.0;
+				dRedBarXPos = 265.0;
+				dRedBarWidth = 757.0;
+				break;
+					
+			case 1600:
+			case 1680:
+				dEmptyBarXPos = 248.0;
+				dEmptyBarWidth = 776.0;
+				dRedBarXPos = 277.0;
+				dRedBarWidth = 748.0;
+				break;
+
+			case 1920:
+				dEmptyBarXPos = 280.0;
+				dEmptyBarWidth = 740.0;
+				dRedBarXPos = 305.0;
+				dRedBarWidth = 715;
+				break;
+			}
+
+
+			//  a.  Skip Intro checkbox in Character Creation is positioned correctly for 16:9 Widescreen resolution
 			if (GetPrivateProfileIntA("SkipIntroFix", "enabled", 0, ".\\Bin\\loader\\widescreenUI_mod.ini"))
 			{
 				WORD value;
