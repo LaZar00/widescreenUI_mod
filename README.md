@@ -15,7 +15,7 @@ The textures of this module are done specifically for 16:9 resolutions (and can 
 The default textures of the game are prepared for 4:3 resolutions.
 
  The changes added to this module are:
-* a.  Skip Intro checkbox in Character Creation is positioned correctly for Widescreen resolutions.
+* a.  Skip Intro checkbox in Character Creation is positioned correctly for Widescreen resolutions.\
   a1. Added checkbox DeltaXPos and CheckboxWidth values for wider texts
 * b.	'Hotkeys' word in Hotkeys Window is centered for Widescreens resolutions.
 * c.  Numbers in Hotkeys Window are REMOVED (only present left numbers) and added in texture (only WideScreen 16:9 resolutions).\
